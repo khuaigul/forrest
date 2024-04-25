@@ -1,19 +1,46 @@
-{% block content %}
-    <h1>Sign In</h1>
-    <form action="" method="post" novalidate>
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.email.label }}<br>
-            {{ form.email(size=32) }}
-        </p>
-        <p>
-            {{ form.password.label }}<br>
-            {{ form.password(size=32) }}
-        </p>
-        <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
-        <p>{{ form.submit() }}</p>
-        <p>
-            {{form.signup()}}
-        </p>
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block title %}
+Вход    
+{%endblock%}
+{%block content%}
+<div class="container py=4">
+    <h1>Авторизация</h1>
+    <form class="form-group" action="" method="post" novalidate> 
+        <div class="form-group">
+            {{ form.csrf_token }}
+            <div class="form-group">
+                {{form.email.label(class="form-control-label")}}
+                {{form.email(class="form-control")}}
+            </div>
+            {%for error in form.email.errors%}
+            <div class="alert alert-danger" role="alert">
+                {{error}}
+            </div>
+            {%endfor%}
+            <div class="form-group">
+                {{form.password.label(class="form-control-label")}}
+                {{form.password(class="form-control")}}
+            </div>
+            {%for error in form.password.errors%}
+            <div class="alert alert-danger" role="alert">
+                {{error}}
+            </div>
+            {%endfor%}
+            <div class="form-check">
+                {{form.remember_me(class="form-check-input")}}
+                {{form.remember_me.label(class="form-check-label")}}
+            </div>
+            {%if note%}
+            <div class="alert alert-danger" role="alert">
+                {{note}}
+            </div>
+            {%endif%}
+            {{form.submit(class="btn btn-primary")}}
+            {{form.signup(class="btn btn-primary")}}
+        </div>     
+        
+        <!-- {{wtf.quick_form(form)}} -->
     </form>
-{% endblock %}
+</div>
+{%endblock%}
