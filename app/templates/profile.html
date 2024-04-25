@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{%block content%}
+<script>
+    function getData(event){
+        console.log("knjnjrngkj")
+    }
+</script>
+<div class="container rounded bg-base mt-5 mb-5">
+    <div class="row">
+        <div class="col-md-4 border-right">
+            <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img class="rounded-circle mt-5" width="150px" src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"><span class="font-weight-bold">{{username}}</span><span class="text-black-50"></span><span> </span></div>
+            {% for image in profileDocs %}
+                <p>
+                    <a href="static/uploads/{{image.filename}}">
+                        {{image.name}} <a href="deleteImage"><i class="fa-solid fa-xmark"></i></a>
+                    </a>
+                </p>
+            {% endfor %}
+        </div>
+        <div class="col-md-8 border-right">
+            <div class="p-3 py-5">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="text-right">Настройки профиля</h4>
+                </div>
+                <form method="POST">
+                    {{ form.csrf_token }}
+                    {{wtf.form_field(form.name, value=data.name)}}
+                    {{wtf.form_field(form.dateOfBirth, value=data.dateOfBirth)}}
+                    {{wtf.form_field(form.gender, value=data.gender)}}
+                    {{wtf.form_field(form.info, value=data.info)}}
+                    <div class="form-group  required"><label class="control-label" for="categoriesTracking">Пеший опыт</label>
+                        <select class="form-control" id="categoriesTracking" name="categoriesTracking" required value="">
+                            {% if data.Tracking == 0 %}
+                                <option value="0" selected>0</option>
+                            {% else %}    
+                                <option value="0">0</option>
+                            {% endif %}
+                            {% for i in range(1, 7) %}
+                                {% if data.Tracking == i %}
+                                    <option value="{{i}}" selected>{{i}}</option>
+                                {%else %}
+                                    <option value="{{i}}">{{i}}</option>
+                                {%endif%}
+                            {% endfor %}
+                        </select>                
+                    </div>
+
+                    <div class="form-group  required"><label class="control-label" for="categoriesTracking">Водный опыт</label>
+                        <select class="form-control" id="categoriesWater" name="categoriesWater" required value="">
+                            {% if data.Water == 0 %}
+                                <option value="0" selected>0</option>
+                            {% else %}    
+                                <option value="0">0</option>
+                            {% endif %}
+                            {% for i in range(1, 7) %}
+                                {% if data.Water == i %}
+                                    <option value="{{i}}" selected>{{i}}</option>
+                                {%else %}
+                                    <option value="{{i}}">{{i}}</option>
+                                {%endif%}
+                            {% endfor %}
+                        </select>                
+                    </div>
+
+                    <div class="form-group  required"><label class="control-label" for="categoriesSkis">Лыжный опыт</label>
+                        <select class="form-control" id="categoriesSkis" name="categoriesSkis" required value="">
+                            {% if data.Skis == 0 %}
+                                <option value="0" selected>0</option>
+                            {% else %}    
+                                <option value="0">0</option>
+                            {% endif %}
+                            {% for i in range(1, 7) %}
+                                {% if data.Skis == i %}
+                                    <option value="{{i}}" selected>{{i}}</option>
+                                {%else %}
+                                    <option value="{{i}}">{{i}}</option>
+                                {%endif%}
+                            {% endfor %}
+                        </select>                
+                    </div>
+
+                    <div class="form-group  required"><label class="control-label" for="categoriesMounts">Горный опыт</label>
+                        <select class="form-control" id="categoriesMounts" name="categoriesMounts" required value="">
+                            {% if data.Mounts == 0 %}
+                                <option value="0" selected>0</option>
+                            {% else %}    
+                                <option value="0">0</option>
+                            {% endif %}
+                            {% for i in range(1, 7) %}
+                                {% if data.Mounts == i %}
+                                    <option value="{{i}}" selected>{{i}}</option>
+                                {%else %}
+                                    <option value="{{i}}">{{i}}</option>
+                                {%endif%}
+                            {% endfor %}
+                        </select>                
+                    </div>
+              
+                    <div class="form-group  required"><label class="control-label" for="categoriesBike">Велосипедный опыт</label>
+                        <select class="form-control" id="categoriesBike" name="categoriesBike" required value="">
+                            {% if data.Bike == 0 %}
+                                <option value="0" selected>0</option>
+                            {% else %}    
+                                <option value="0">0</option>
+                            {% endif %}
+                            {% for i in range(1, 7) %}
+                                {% if data.Bike == i %}
+                                    <option value="{{i}}" selected>{{i}}</option>
+                                {%else %}
+                                    <option value="{{i}}">{{i}}</option>
+                                {%endif%}
+                            {% endfor %}
+                        </select>                
+                    </div>
+
+                    <div class="form-group  required"><label class="control-label" for="categoriesMixed">Смешанный опыт</label>
+                        <select class="form-control" id="categoriesMixed" name="categoriesMixed" required value="">
+                            {% if data.Mixed == 0 %}
+                                <option value="0" selected>0</option>
+                            {% else %}    
+                                <option value="0">0</option>
+                            {% endif %}
+                            {% for i in range(1, 7) %}
+                                {% if data.Mixed == i %}
+                                    <option value="{{i}}" selected>{{i}}</option>
+                                {%else %}
+                                    <option value="{{i}}">{{i}}</option>
+                                {%endif%}
+                            {% endfor %}
+                        </select>                
+                    </div>
+                    <div class="form-group">
+                    {{form.saveChanges(class="btn simple_btn text-white profile-button")}}
+
+                    </div>
+                    
+                </form>
+                <div class="form-group">
+                    <a href="/uploadDocs" class="btn simple_btn text-white">
+                        Загрузить документы
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+{%endblock%}

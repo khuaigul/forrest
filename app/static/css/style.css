@@ -1,0 +1,128 @@
+.nav-pills li a:hover {
+    background-color: rgb(170, 139, 86);
+}
+
+.navbar {
+    background-color: rgb(22, 48, 32);
+    align-items: start;
+}
+
+.sidebar {
+    background-color: rgb(22, 48, 32);
+    align-items: start;
+}
+
+.navbar-text,
+.navbar-brand,
+.navbar-link,
+.sidebar a {
+    color: rgb(240, 235, 206);
+}
+
+.bg-base {
+    background-color: rgb(240, 235, 206);
+}
+
+.my-container {
+    margin: 10px;
+    padding: 10px;
+    background-color: rgb(240, 235, 206);
+}
+
+a{
+    color: rgb(22, 48, 32);
+    text-decoration: underline;
+}
+a:hover{
+    color: rgb(170, 139, 86);
+    text-decoration: underline;
+}
+
+.simple_btn {
+    background-color: rgb(22, 48, 32);
+    color: white;
+}
+
+.simple_btn:hover{
+    background-color: rgb(170, 139, 86);
+}
+
+.bg-brown{
+    background-color: rgb(240, 235, 206);
+    border-color: rgb(22, 48, 32);
+    border-width: 2px;
+}
+
+.bg-darkbrown{
+    background-color: rgb(170, 139, 86);
+}
+.my-link{
+    color: rgb(170, 139, 86);
+}
+
+.my-link:hover{
+    color: rgb(22, 48, 32);
+}
+
+
+
+.textHeader{
+    background: rgb(170, 139, 86);
+    padding: 2px
+}
+
+.textHeader a{
+    color: rgb(22, 48, 32);
+    padding-left: 5px;
+}
+
+.green-bg{
+    background-color: rgb(22, 48, 32);
+}
+
+
+
+
+/* css
+body{
+ background: #eee;
+}
+
+#side_nav{
+ background: #000;
+ min-width: 250px;
+ max-width: 250px;
+ transition: all 0.3s;
+}
+.content{
+   min-height: 100vh;
+   width: 100%;
+}
+hr.h-color{
+  background: #eee;
+}
+
+.sidebar li.active{
+   background: #eee;
+   border-radius: 8px;
+}
+
+.sidebar li.active a, .sidebar li.active a:hover {
+ color: #000;
+}
+.sidebar li a{
+ color: #fff;
+}
+
+@media(max-width: 767px){
+ #side_nav{
+   margin-left: -250px;
+   position: absolute;
+   min-height: 100vh;
+   z-index: 1;
+
+ }
+ #side_nav.active{
+   margin-left: 0;
+  }
+}

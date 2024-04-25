@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{%block content%}
+    <div class="container rounded bg-base mt-5 mb-5">
+        <form method = "POST" enctype = "multipart/form-data">
+            {{form.csrf_token}}
+            <div class="form-group">
+                {{form.photo()}}    
+            </div>
+            <div class="form-group">
+                {{form.name.label}}
+                <br>
+                {{form.name}}
+            </div>
+            <div class="form-group">
+                {{form.submit(class="btn simple_btn text-white")}}
+            </div>
+
+        </form>  
+    </div>
+    
+
+
+{% endblock %}

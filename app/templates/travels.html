@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{%block content%}
+
+<div class="container mt-5 mb-5">
+    
+    {% if announcements == [] %}
+    <br>
+    <figure class="text-center">
+        <blockquote class="blockquote">
+          <p> У вас ещё нет ни одного путешествия</p>
+        </blockquote>
+        <figcaption class="blockquote-footer">
+            Но вы можете отправиться на его <a href="/">поиски</a>
+        </figcaption>
+    </figure>
+    {% else %}
+    <div class="container m2-5 mb-5 p-5">
+        <h1 class="mx-auto">
+            Мои путешествия
+        </h1>
+        {% for (announcement, category, headUsername, headID) in announcements %}
+        <div class="card bg-brown m-5">
+            <div class="card-body">
+                <h5 class="card-title" ><a href="/announcement?id={{announcement.id}}">{{ announcement.name }}</a></h5>
+                <h6 class="card-subtitle mb-2 text-muted">{{ category }}</h6>
+                <p class="card-text"><i class="fa-solid fa-person-hiking"></i><a class="ms-2" href="user?id={{headID}}">{{headUsername}}</a></p>
+                
+                <p class="card-text">{{ announcement.dateBegin.strftime('%Y-%m-%d')}} - {{announcement.dateEnd.strftime('%Y-%m-%d')}}</p>
+            <a href="/participants?id={{announcement.id}}" class="card-link my-link">Участники</a>
+            </div>
+        </div> 
+        {% endfor %}
+
+        <div class="m-5">
+            {% if page > 1 %}
+                <a class="my-link" href="{{url_for('headProfile', page=page-1)}}">Предыдущая</a>
+            {%endif%}
+            <span>Страница {{page}} из {{total_pages}} </span>
+            {% if page < total_pages %}
+                <a class="my-link" href="{{url_for('headProfile', page=page+1)}}">Следующая</a>
+            {%endif%}
+        </div>
+        
+        </div>     
+    {%endif%}
+</div>
+
+{%endblock%} 

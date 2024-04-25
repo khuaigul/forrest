@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{%block content%}
+{% import "bootstrap/wtf.html" as wtf %}
+
+<div class="container rounded bg-base mt-5 mb-5">
+    {%if requests == []%}
+    <figure class="text-center">
+        <blockquote class="blockquote">
+          <p> У вас ещё нет уведомлений </p>
+        </blockquote>
+    </figure>
+    {% else %}
+        {% for request in requests %}
+        {% if request.type == "newRequest"%}
+            <div class="card w-75 mb-3">
+                <div class="card-body">
+                <h5 class="card-title">Новая заявка</h5>
+                <p class="card-text">Пользователь <a href="/user?id={{request.userID}}">{{request.userName}}</a> хочет принять участие в походе <a href="/announcement?id={{request.announcementID}}">{{request.announcementName}}</a></p>
+                <a href="/answerRequest?id={{request.id}}&username={{request.userName}}&user={{request.userID}}&answer=True&announcementID={{request.announcementID}}&announcementName={{request.announcementName}}" class="btn simple_btn">Принять</a>
+                <a href="/answerRequest?id={{request.id}}&username={{request.userName}}&user={{request.userID}}&answer=True&announcementID={{request.announcementID}}&announcementName={{request.announcementName}}" class="btn simple_btn">Отклонить</a>
+                </div>
+            </div>
+        {% else %}
+        <div class="card w-75 mb-3">
+            <div class="card-body">
+            <h5 class="card-title">Ответ на вашу заявку</h5>
+            {%if request.status == "added"%}
+            <p class="card-text">Ваша заявка на участие в походе <a href="/announcement?id={{request.announcementID}}">{{request.announcementName}}</a> одобрена</p>
+            {%else%}
+            <p class="card-text">Ваша заявка на участие в походе <a href="/announcement?id={{request.announcementID}}">{{request.announcementName}}</a> отклонена</p>
+            {%endif%}
+            </div>
+        </div>
+        {%endif%}
+        {%endfor%}
+        <div class="m-5">
+            {% if page > 1 %}
+                <a class="my-link" href="{{url_for('notifications', page=page-1)}}">Предыдущая</a>
+            {%endif%}
+            <span>Страница {{page}} из {{total_pages}} </span>
+            {% if page < total_pages %}
+                <a class="my-link" href="{{url_for('notifications', page=page+1)}}">Следующая</a>
+            {%endif%}
+        </div>
+    {% endif %}
+</div>
+{%endblock%}

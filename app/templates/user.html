@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{%block content%}
+<script>
+    function getData(event){
+        console.log("knjnjrngkj")
+    }
+</script>
+<div class="container rounded bg-base mt-5 mb-5">
+    <div class="row">
+        <div class="col-md-4 border-right">
+            <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img class=" mt-5" width="150px" src="static/uploads/avatar.jpg"><span class="font-weight-bold"></span><span class="text-black-50"></span><span> </span></div>
+            
+        </div>
+        
+        <div class="col-md-8 border-right">
+            <div class="p-3 py-5">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2 class="text-right">{{data.name}}</h2>
+                </div>
+                <div class="control-label">
+                    {{data.dateOfBirth.strftime('%Y-%m-%d')}}
+                </div>
+                </br>
+                {%if data.categories == []%}
+                    <h3 class="control-label">
+                        Категорийный опыт отсутствует
+                    </h3>
+                {%else%}
+                    <h3 class="control-label">
+                        Категорийный опыт: 
+                    </h3>
+                    {% for category in data.categories%}
+                        <div>
+                            {{category}}
+                        </div>
+                    {%endfor%}
+                {%endif%}
+                <br>
+                <div>
+                    <h3>Документы</h3>
+                    {% for image in profileDocs %}
+                        <p>
+                            <a href="static/uploads/{{image.filename}}">
+                                {{image.name}}
+                            </a>
+                        </p>
+                    {% endfor %}
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <h3>Путешествия</h3>
+        {% for (announcement, category, headUsername, headID) in announcements %}
+        <div class="card bg-brown m-5">
+            <div class="card-body">
+                {% if headID == userID %}
+                    <h5 class="card-title" ><a href="/announcement?id={{announcement.id}}">{{ announcement.name }}</a>(Руководство)</h5>
+                {% else %}
+                    <h5 class="card-title" ><a href="/announcement?id={{announcement.id}}">{{ announcement.name }}</a></h5>
+                {% endif %}
+                <h6 class="card-subtitle mb-2 text-muted">{{ category }}</h6>
+                <p class="card-text"><i class="fa-solid fa-person-hiking"></i><a class="ms-2" href="user?id={{headID}}">{{headUsername}}</a></p>
+                
+                <p class="card-text">{{ announcement.dateBegin.strftime('%Y-%m-%d')}} - {{announcement.dateEnd.strftime('%Y-%m-%d')}}</p>
+            <a href="/participants?id={{announcement.id}}" class="card-link my-link">Участники</a>
+            </div>
+        </div> 
+        {% endfor %}
+    </div>
+</div>
+</div>
+</div>
+{%endblock%}

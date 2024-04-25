@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{%block content%}
+    <div class="container">
+        <h1 class="m-2 p-2">ForRest</h1>
+        <form method="post">
+            <div  class="d-flex nav-pills nav-item my-sm-2 my-2" role="search">
+                {{ form.csrf_token }}
+            {{form.text(class="form-control")}}
+
+            {{wtf.form_field(form.submit, class="simple_btn btn text-white", type="submit")}}
+            </div>
+            
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                        {{wtf.form_field(form.tracking)}}
+                        {{wtf.form_field(form.water)}}
+                        {{wtf.form_field(form.skis)}}
+                        {{wtf.form_field(form.mounts)}}
+                        {{wtf.form_field(form.bike)}}
+                        {{wtf.form_field(form.mixed)}}
+                    </div>
+                    <div class="col">
+                        {{wtf.form_field(form.pvd)}}
+                        {{wtf.form_field(form.nonsport)}}
+                        {{wtf.form_field(form.category1)}}
+                        {{wtf.form_field(form.category2)}}
+                        {{wtf.form_field(form.category3)}}
+                        {{wtf.form_field(form.category4)}}
+                        {{wtf.form_field(form.category5)}}
+                        {{wtf.form_field(form.category6)}}
+    
+                    </div>
+                </div>
+                <hr class="hr hr-blurry" />
+                <div class="row">
+                    <div class="col">
+                    {{wtf.form_field(form.dateBegin)}}
+
+                    </div>
+                    <div class="col">
+                    {{wtf.form_field(form.dateEnd)}}
+
+                    </div>
+                </div>
+            </div>
+            
+            <hr class="hr hr-blurry" />
+            
+
+                       
+            
+        </form>
+
+        <div>
+            {% for (announcement, category, headUsername, headID) in announcements %}
+            <div class="card bg-brown m-5" >
+                <div class="card-body">
+                <h5 class="card-title" ><a href="/announcement?id={{announcement.id}}">{{ announcement.name }}</a></h5>
+                <h6 class="card-subtitle mb-2 text-muted">{{ category }}</h6>
+                <p class="card-text"><i class="fa-solid fa-person-hiking"></i><a class="ms-2" href="user?id={{headID}}">{{headUsername}}</a></p>
+                
+                <p class="card-text">{{ announcement.dateBegin.strftime('%Y-%m-%d')}} - {{announcement.dateEnd.strftime('%Y-%m-%d')}}</p>
+                <!-- <a href="/participants?id={{announcement.id}}" class="card-link my-link">Участники</a>
+                <a href="/editAnnouncement?id={{announcement.id}}" class="card-link my-link">Редактировать</a> -->
+                </div>
+            </div> 
+            {% endfor %}
+
+            {% if recommendations == False %}
+                <div class="m-5">
+                    {% if page > 1 %}
+                        <a class="my-link" href="{{url_for('headProfile', page=page-1)}}">Предыдущая</a>
+                    {%endif%}
+                    <span>Страница {{page}} из {{total_pages}} </span>
+                    {% if page < total_pages %}
+                        <a class="my-link" href="{{url_for('headProfile', page=page+1)}}">Следующая</a>
+                    {%endif%}
+                </div>
+            {% endif %}
+
+            
+        </div>
+    </div>
+{%endblock%}

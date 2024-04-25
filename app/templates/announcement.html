@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{%block content%}
+<div class="container rounded bg-base mt-5 mb-5">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="text-right">{{info.name}}</h4>
+                </div>
+                <form method="POST">
+                    {{ form.csrf_token }}
+
+                    <p class="textHeader">
+                        <i class="fa-regular fa-compass"></i><a>Категория</a>
+                    </p>
+                    <p>
+                        {{category}}
+                    </p>
+                    <p class="textHeader">
+                        <i class="fa-regular fa-compass"></i><a>О походе</a>
+                    </p>
+                    <p>
+                        {{info.info}}
+                    </p>
+                    <p class="textHeader">
+                        <i class="fa-regular fa-compass"></i><a>Даты проведения</a>
+                    </p>
+                    <p>
+                        {{dateBegin}} - {{dateEnd}}
+                    </p>
+                    <p class="textHeader">
+                        <i class="fa-regular fa-compass"></i><a>Набор открыт до</a>
+                    </p>
+                    <p>
+                        {{dateTillOpen}}
+                    </p>
+                    {% if info.map %}
+                        <p class="textHeader">
+                            <i class="fa-regular fa-compass"></i><a>Маршрут</a>
+                        </p>
+                        <p>
+                            {{info.map}}
+                        </p>
+                    {% endif %}
+                    {% if allowed and info.status == "active" %}
+                        {{form.submit(class="btn simple_btn text-white profile-button")}}
+                    {% endif %}
+                    </form>
+                
+            </div>
+    </div>
+</div>
+{%endblock%}

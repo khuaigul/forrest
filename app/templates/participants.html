@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{%block content%}
+
+<div class="container mt-5 mb-5">
+    <h1>Участники похода {{announcement.name}}</h1>
+    {% for participant in participants %}
+        <div>
+            <a href="user?id={{participant.id}}">{{participant.name}}</a>
+            {% if userIsHeader%}
+                <a href="deleteParticipant?id={{announcement.id}}&userID={{participant.id}}"><i class="fa-solid fa-xmark"></i></a>
+            {% endif %}
+        </div>
+    {% endfor %}
+    
+</div>
+
+{%endblock%} 
