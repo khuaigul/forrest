@@ -70,8 +70,12 @@ class NewAnnouncement(FlaskForm):
     info = TextAreaField('Информация о походе')
     category = SelectField('Категория похода', coerce=str, choices=getAllCategories())
     submit = SubmitField('Опубликовать')
-# class Profile(FlaskForm):
-#     name = 
+
+class EditAnnouncement (NewAnnouncement):
+    change = SubmitField('Изменить')
+    cancel = SubmitField('Назад')
+    delete = SubmitField('Удалить')
+
     
 class AnnouncementForm(FlaskForm):
     submit = SubmitField('Стать участником')
@@ -114,3 +118,7 @@ class SearchForm(FlaskForm):
 
 class UserPage(FlaskForm):
     submit = SubmitField("Руководство")
+
+class DeleteParticipantForm(FlaskForm):
+    submit = SubmitField('Да')
+    cancel = SubmitField('Назад')

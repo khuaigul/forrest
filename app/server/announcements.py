@@ -1,5 +1,5 @@
 from app import db
-from models import User, Profile, Announcement
+from models import User, Profile, Announcement, Request, Category
 from app import app
 from datetime import datetime
 from app.server.cathegories import getCategoryByID
@@ -7,6 +7,11 @@ import random
 from app.server.profile import getUserEmail
 
 with app.app_context():
+    def getAnnouncements(user):
+        userID = User.query.filter_by(email=user).first().id
+        announcements = Announcement.query.filter_by(headID = userID).all()
+        return announcements
+
     def createAnnouncement(name, dateBegin, dateEnd, dateTillOpen, map, info, category, username):
         datePost = datetime.today()
         userID = User.query.filter_by(email=username).first().id
@@ -15,10 +20,32 @@ with app.app_context():
         db.session.commit()
         db.session.close()
 
+    def changeAnnouncement(id, name, category, dateBegin, dateEnd, dateTillOpen, map, info):
+        announcement = Announcement.query.filter_by(id=id).first()
+        announcement.name = name
+        if int(category) != 0:
+            print(category)
+            category = Category.query.filter_by(id=category).first()
+            announcement.category = category
+        announcement.dateBegin = dateBegin
+        announcement.dateEnd = dateEnd
+        announcement.dateTillOpen = dateTillOpen
+        announcement.map = map
+        announcement.info = info
+        db.session.commit()
+        db.session.close()
+
     def checkIfHeader(username, announcementID):
+        announcementID = int(announcementID)
         userID = User.query.filter_by(email=username).first().id
         headID = Announcement.query.filter_by(id=announcementID).first().headID
         return userID == headID
+    
+    def checkIfEditAllowed(id):
+        dateEnd = Announcement.query.filter_by(id=id).first().dateEnd
+        print(dateEnd, datetime.now().date(), dateEnd.date() <= datetime.now().date())
+        return dateEnd.date() >= datetime.now().date()
+    
 
     def getAnnouncementsByUser(username):
         changeAnnouncementsStatuses()
@@ -28,7 +55,8 @@ with app.app_context():
         result = []
         for announcement in announcements:
             categoryID = announcement.categoryID
-            res = (announcement, getCategoryByID(categoryID), user.email, user.id)
+            isPassed = (datetime.now().date() > announcement.dateEnd.date())
+            res = (announcement, getCategoryByID(categoryID), user.email, user.id, isPassed)
             result.append(res)
         return result
     
@@ -47,7 +75,6 @@ with app.app_context():
             record = announcement
             records.append(record)
         number = min(number, len(records))
-        print("DATA", number, len(records))
         records = random.sample(records, number)
         return records
     
@@ -67,7 +94,6 @@ with app.app_context():
         today = str(datetime.today().strftime('%Y-%m-%d'))
         announcements = Announcement.query.all()
         for announcement in announcements:
-            # changeAnnouncementStatus(announcement.id)
             if today > str(announcement.dateEnd):
                 announcement.status = "passed"
             elif today > str(announcement.dateTillOpen):
@@ -98,4 +124,26 @@ with app.app_context():
             return "Дата окончания набора в поход не может быть позже начала похода"
         return None
     
+    def userHaveAnnouncements(userID):
+        announcements = Announcement.query.filter_by(headID=userID).all()
+        if len(announcements) == 0:
+            return False
+        return True
     
+    def userGoesWithUser(user1ID, user2ID):
+        requests1 = Request.query.filter_by(userID=user1ID).all()
+        for request1 in requests1:
+            announcementID = request1.announcementID
+            requests2 = Request.query.filter_by(userID=user2ID, announcementID=announcementID).all()
+            if len(requests2) is not 0:
+                return True
+        return False
+    
+    def removeAnnouncement(id):
+        announcement = Announcement.query.filter_by(id=id).first()
+        db.session.delete(announcement)
+        db.session.commit()
+        db.session.close()
+    
+    def getAnnouncementName(announcementID):
+        return Announcement.query.filter_by(id=announcementID).first().name

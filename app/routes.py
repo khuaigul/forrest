@@ -1,63 +1,75 @@
 from app import app
-# , photos
+
+import pathlib
+import os
+
 from flask import render_template, make_response, url_for, session
-from app.forms import UploadForm, SearchForm, MessageForm,  AnswerRequest, AnnouncementConfirm, AnnouncementForm, EditProfile, LoginForm, SignupForm, NewProfile, HeadProfile, NewAnnouncement
+from app.forms import EditAnnouncement, DeleteParticipantForm, UploadForm, SearchForm, MessageForm,  AnswerRequest, AnnouncementConfirm, AnnouncementForm, EditProfile, LoginForm, SignupForm, NewProfile, HeadProfile, NewAnnouncement
 from flask import render_template, flash, redirect
 from flask import request
 from app.server.signup import userExists, register, isRegistered, checkSignin, createProfile, delete, logout
-# from werkzeug.datastructures import MultiDict
-from app.server.profile import getProfileDocs, getUserUsername, getUserData, getProfileData, updateProfile
-from app.server.headProfile import getAnnouncements
-from app.server.announcements import checkIfHeader, checkAnnouncementDates,  getAnnouncement, createAnnouncement, getAnnouncementsByUser
+from app.server.profile import getUserName, getProfileDocs, getUserUsername, getUserData, getProfileData, updateProfile
+from app.server.announcements import getAnnouncements
+from app.server.announcements import removeAnnouncement, changeAnnouncement, checkIfEditAllowed, getAnnouncementName, checkIfHeader, checkAnnouncementDates,  getAnnouncement, createAnnouncement, getAnnouncementsByUser
 from app.server.cathegories import getAllCategories
 from models import Profile
 from datetime import date
 from flask_paginate import Pagination, get_page_args
 from app.server.pagination import get_announcements_pag
-from app.server.requests import getParticipants, checkIfRequestAllowed, getPassedTravelsByUser, getTravelsByUser, declineRequest, acceptRequest, checkIfHeaderByRequest, changeWatchedStatus, getRequests, newRequest, requestsCount
+from app.server.requests import removeParticipant, getParticipants, checkIfRequestAllowed, getPassedTravelsByUser, getTravelsByUser, declineRequest, acceptRequest, checkIfHeaderByRequest, changeWatchedStatus, getRequests, newRequest, requestsCount
 from app.server.messages import checkIfChatAllowed, makeWathed, sendMessage, getChats, getMessages
 from app.server.search import getSearchResult
 from app.server.main import getUserRecommendations
 from app.server.images import createDocument, getDocNameForUser, allowed_file
-import pathlib
-import os
-# from werkzeug.utils import secure_filename
-# @app.errorhandler(404)
-# def page_not_found(e):
-#     return render_template('')
+from app.server.rules import checkIfUserAllowed, checkIfParticipantsAllowed
 
 @app.before_request
 def before_request():
-    print(request.path)
-    # if request.path == "/static/css/style.css":
-    #     pass
-    # allowList = ['/login', '/signup']
-    # allPages = ['/login', 'signup', '/newProfile' '/', '/main', '/profile', '/newAnnouncement', 'headProfile']
-    # if 'user' not in session:
-    #     if request.path in allowList:
-    #         pass
-    #     else:
-    #         return redirect('/login')
-    # print(request.path)
-    # if request.path == '/answerRequest':
-    #     args = request.args
-    #     id = args.get("id")
-    #     username = session["user"]
-    #     print(checkIfHeaderByRequest(id, username))
-    #     if not checkIfHeaderByRequest(id, username):
-    #         return redirect('/')
-    #     else:
-    #         pass
+    username = session.get('user')
+    unlogged = ['/login', '/signup']
+    if session.get('user') is None and request.path not in unlogged:
+        return redirect('/login')
+    if request.path == '/user':
+        userID = request.args.get("id")
+        if not checkIfUserAllowed(session['user'], userID):
+            return redirect('/')
+    if request.path == '/answerRequest' and request.args.get('id') is not None:
+        requestID = request.args.get('id')
+        if not checkIfRequestAllowed(requestID, session['user']):
+            return redirect('/')
+    if request.path == '/messages' and request.args.get('id') is not None:
+        if not checkIfChatAllowed(request.args.get('id'), session['user']):
+            return redirect('messages')
+    if request.path == '/participants':
+        if not checkIfParticipantsAllowed(session['user'], request.args.get('id')):
+            return redirect('/')
+
+    if request.path == '/deleteParticipant' and request.args.get('userID') is not None and request.args.get('id') is not None:
+        if not checkIfHeader(username, request.args.get('id')):
+            return redirect('/main')
         
-    # if request.path not in allowList:       
-    #     profile = Profile.query.filter_by(email=session["user"]).all()
-    #     if profile == [] and request.path != '/newProfile' and request.path not in allowList:
-    #         print("go to new profile")
-    #         return redirect('/newProfile')
-    # print('accept')
+    if request.path == '/editAnnouncement':
+        if request.args.get('id') is  None:
+            return redirect('/headProfile')
+        if not checkIfHeader(username, request.args.get('id')) or not checkIfEditAllowed(request.args.get('id')):
+            return redirect('/headProfile')
+        
+    if request.path == '/deleteAnnouncement':
+        if request.args.get('id') is  None:
+            return redirect('/headProfile')
+        if not checkIfHeader(username, request.args.get('id')) or not checkIfEditAllowed(request.args.get('id')):
+            return redirect('/headProfile')
 
+    pathList = ['/announcement', '/announcementConfirm', '/answerRequest', '/deleteAnnouncement', 
+                '/daleteParticipant', '/editAnnouncement', 'headProfile', 'login', '/main', '/', 
+                '/messages', '/newAnnouncement', '/newProfile', '/notifications', '/participants',
+                '/profile', '/sighup', '/travels', '/uploadDocs', '/user', '/static/css/style.css']
     
+    if request.path not in pathList:
+        return redirect ('/main')
 
+    pass
+    
 
 
 @app.route('/')
@@ -66,8 +78,37 @@ def r():
 
 @app.route('/index')
 def index():
+    return "dfdf"
     user = {'username': 'Miguel'}
     return render_template('index.html', title='Home', user=user)
+
+@app.route('/editAnnouncement', methods=['GET', 'POST'])
+def indexx():
+    print("EDIT ANNOUNCEMENT")
+    username = session['user']
+    alarmCount = requestsCount(username)
+    id = request.args.get("id")
+
+    form = EditAnnouncement()
+
+    info, category = getAnnouncement(id)
+    dateBegin = info.dateBegin.strftime('%Y-%m-%d')
+    dateEnd = info.dateEnd.strftime('%Y-%m-%d')
+    dateTillOpen = info.dateTillOpen.strftime('%Y-%m-%d')
+
+    data = {"map": info.map, "name" : info.name, "info" : info.info, "category" : category,"dateBegin" : dateBegin, "dateEnd" : dateEnd, "dateTillOpen" : dateTillOpen}
+
+    if form.validate_on_submit:
+        if form.change.data:
+            changeAnnouncement(id, form.name.data, form.category.data, form.dateBegin.data, form.dateEnd.data, form.dateTillOpen.data, form.map.data, form.info.data)
+            return redirect('/editAnnouncement?id='+id)
+        if form.cancel.data:
+            return redirect('/headProfile')
+        if form.delete.data:
+            return redirect('/deleteAnnouncement?id='+id)
+    
+    return render_template('/editAnnouncement.html',username=username, alarmCount=alarmCount, data = data, form=form)
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -156,6 +197,10 @@ def main():
         data = getUserRecommendations(username)
         return render_template('main.html', form=form, data=data, alarmCount=alarmCount, username=username, announcements = data, recomendations = True)
 
+@app.route('/aa', methods=['GET', 'POST'])
+def aa():
+    return "Hello"
+
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
     username = session['user']
@@ -203,8 +248,6 @@ def user():
     alarmCount =requestsCount(username)
     args = request.args
     id = args.get("id")
-    # if not checkIfUserAllowed(id, username):
-    #     return redirect('/')
    
     travels = getPassedTravelsByUser(id)
     data = getUserData(id)
@@ -309,6 +352,31 @@ def announcement():
     allowed = checkIfRequestAllowed(id, username)
     return render_template('/announcement.html',alarmCount=alarmCount,dateBegin=dateBegin, dateEnd=dateEnd, dateTillOpen=dateTillOpen, allowed=allowed, username=username, form=form, info=info, category = category) 
 
+# @app.route('/editAnnouncement', methods=['GET', 'POST'])
+# def editAnnouncement():
+#     print("EDIT ANNOUNCEMENT")
+#     username = session['user']
+#     alarmCount = requestsCount(username)
+#     id = request.args.get("id")
+
+#     form = NewAnnouncement()
+
+#     info, category = getAnnouncement(id)
+#     dateBegin = info.dateBegin.strftime('%Y-%m-%d')
+#     dateEnd = info.dateEnd.strftime('%Y-%m-%d')
+#     dateTillOpen = info.dateTillOpen.strftime('%Y-%m-%d')
+
+#     data = (info, category, dateBegin, dateEnd, dateTillOpen)
+
+#     if form.validate_on_submit:
+#         if form.submit.data:
+#             print("EDIT")
+    
+#     return render_template('/announcement.html',alarmCount=alarmCount, data = data)
+
+
+
+
 @app.route('/notifications', methods=['GET', "POST"])
 def notifications():
     username = session['user']
@@ -382,3 +450,34 @@ def participants():
     userIsHeader = checkIfHeader(username, id)
     return render_template('/participants.html', userIsHeader=userIsHeader, alarmCount=alarmCount, announcement=announcement, username=username, participants=participants)
  
+@app.route('/deleteParticipant', methods=['GET', 'POST'])
+def deleteParticipant():
+    username = session['user']
+    alarmCount = requestsCount(username)
+    userID = request.args.get("userID")
+    announcementID = request.args.get("id")
+    form = DeleteParticipantForm()
+    if form.validate_on_submit:
+        if form.submit.data:
+            removeParticipant(userID, announcementID)
+            return redirect('/participants?id='+announcementID)
+        if form.cancel.data:
+            return redirect('/participants?id='+announcementID)
+    userName = getUserName(userID)
+    announcementName = getAnnouncementName(announcementID)
+    return render_template('/deleteParticipant.html', form=form, announcementName=announcementName, userName=userName, username=username, alarmCount=alarmCount, userID=userID, announcementID=announcementID)
+
+@app.route('/deleteAnnouncement', methods=['GET', 'POST'])
+def deleteAnnouncement():
+    username = session['user']
+    alarmCount = requestsCount(username)
+    announcementID = request.args.get("id")
+    form = DeleteParticipantForm()
+    if form.validate_on_submit:
+        if form.submit.data:
+            removeAnnouncement(announcementID)
+            return redirect('/headProfile')
+        if form.cancel.data:
+            return redirect('/editAnnouncement?id='+announcementID)
+    announcementName = getAnnouncementName(announcementID)
+    return render_template('/deleteAnnouncement.html', form=form, announcementName=announcementName, username=username, alarmCount=alarmCount, announcementID=announcementID)

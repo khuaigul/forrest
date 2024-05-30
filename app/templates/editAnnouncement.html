@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{%block content%}
+{% import "bootstrap/wtf.html" as wtf %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    var selectElement = document.getElementById("category");
+    var selectedValue = selectElement.value; // Получаем текущее значение селектора
+
+    // Проходим по всем опциям в селекторе
+    for (var i = 0; i < selectElement.options.length; i++) {
+        var option = selectElement.options[i];
+        if (option.value == selectedValue) { // Если значение опции совпадает с выбранным значением
+            selectElement.selectedIndex = i; // Устанавливаем индекс выбранного элемента
+            break; // Выходим из цикла после первого совпадения
+        }
+    }
+});
+    </script>
+
+<div class="container">
+    <form class="form-group"  method="post" novalidate> 
+        <h1>Редактировать объявление</h1>
+        {{ form.csrf_token }}
+        {{wtf.form_field(form.name, value=data.name)}}
+        <div class="form-group "><label class="control-label" for="category">Категория похода (выбран {{data.category}})</label>
+        
+            <select class="form-control" id="category" name="category" value="3"><option value="0" selected>не изменять</option><option value="1">неспортивный Пешеходный </option><option value="2">Пешеходный поход выходного дня </option><option value="3">Пешеходный 1</option><option value="4">Пешеходный 2</option><option value="5">Пешеходный 3</option><option value="6">Пешеходный 4</option><option value="7">Пешеходный 5</option><option value="8">Пешеходный 6</option><option value="9">неспортивный Водный </option><option value="10">Водный поход выходного дня </option><option value="11">Водный 1</option><option value="12">Водный 2</option><option value="13">Водный 3</option><option value="14">Водный 4</option><option value="15">Водный 5</option><option value="16">Водный 6</option><option value="17">неспортивный Лыжный </option><option value="18">Лыжный поход выходного дня </option><option value="19">Лыжный 1</option><option value="20">Лыжный 2</option><option value="21">Лыжный 3</option><option value="22">Лыжный 4</option><option value="23">Лыжный 5</option><option value="24">Лыжный 6</option><option value="25">неспортивный Горный </option><option value="26">Горный поход выходного дня </option><option value="27">Горный 1</option><option value="28">Горный 2</option><option value="29">Горный 3</option><option value="30">Горный 4</option><option value="31">Горный 5</option><option value="32">Горный 6</option><option value="33">неспортивный Велосипедный </option><option value="34">Велосипедный поход выходного дня </option><option value="35">Велосипедный 1</option><option value="36">Велосипедный 2</option><option value="37">Велосипедный 3</option><option value="38">Велосипедный 4</option><option value="39">Велосипедный 5</option><option value="40">Велосипедный 6</option><option value="41">неспортивный Смешанный </option><option value="42">Смешанный поход выходного дня </option><option value="43">Смешанный 1</option><option value="44">Смешанный 2</option><option value="45">Смешанный 3</option><option value="46">Смешанный 4</option><option value="47">Смешанный 5</option><option value="48">Смешанный 6</option></select>
+          
+        </div>
+
+        {{wtf.form_field(form.dateBegin, value=data.dateBegin)}}
+        {{wtf.form_field(form.dateEnd, value=data.dateEnd)}}
+        {{wtf.form_field(form.dateTillOpen, value=data.dateTillOpen)}}
+        {{wtf.form_field(form.map, value=data.map)}}
+        <div class="form-group "><label class="control-label" for="info">Информация о походе</label>
+            <textarea class="form-control" id="info" name="info" value="вамвм">{{data.info}}</textarea>
+        </div>
+        <p>
+        {{note}}
+
+        </p>
+        {% if noteStatus == True %}
+            <div class="alert alert-danger">
+                {{note}}
+            </div>
+        {% endif %}
+        {{form.change(class="btn simple_btn text-white profile-button")}}
+        {{form.cancel(class="btn simple_btn text-white profile-button")}}
+        {{form.delete(class="btn simple_btn text-white profile-button")}}
+        
+    </form>
+</div>
+{%endblock%}

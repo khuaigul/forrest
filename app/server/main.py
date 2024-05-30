@@ -14,6 +14,5 @@ with app.app_context():
 
         records = []
         for announcement in announcements:
-            print("ANNOUNCEMENT", announcement)
             records.append((announcement, getCategoryByID(announcement.categoryID), getUserEmail(announcement.headID), announcement.headID))
         return records

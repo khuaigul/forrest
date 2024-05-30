@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{%block content%}
+{% import "bootstrap/wtf.html" as wtf %}
+
+<div class="container rounded bg-base mt-5 mb-5">
+    <form method="POST">
+        {{ form.csrf_token }}
+        
+            <p> Вы действительно хотите удалить объявление о походе <a href="/announcement?id={{id}}">{{name}}</a>?</p>
+            {{form.submit(class="btn simple_btn text-white ")}}
+            {{form.cancel(class="btn simple_btn text-white ")}}
+    </form>
+    
+</div>
+{%endblock%}

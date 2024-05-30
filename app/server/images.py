@@ -13,8 +13,6 @@ with app.app_context():
         return send_from_directory(app.config['UPLOADED_PHOTOS_DEST'], filename)
 
     def allowed_file(file):
-        print("SUFFICS")
-        print(pathlib.Path(file.filename).suffix)
         return pathlib.Path(file.filename).suffix in ALLOWED_EXTENSIONS
     
     def getDocNameForUser(username):
@@ -24,7 +22,6 @@ with app.app_context():
         return filename
     
     def createDocument(username, filename, name,):
-        print(username, filename, name)
         userID = getUserIDByUsername(username)
         doc = Image(userID=userID, filename=filename, name=name)
         db.session.add(doc)

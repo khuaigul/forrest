@@ -21,13 +21,6 @@ with app.app_context():
             return
         chat = chat.first()
     
-    # def newMessage(fromID, toID, text, dateTime):
-    #     chat = getChatID(fromID, toID)
-    #     message = Message(text=text, firstUserID=fromID, secondUserID=toID, status="unread", sendTime=dateTime, chatID=chat.id)
-    #     db.session.add(message)
-    #     db.session.commit()
-    #     db.session.close()
-
     def makeChat(requestID):
         request = Request.query.filter_by(id=requestID).first()
         firstUserID = request.userID
@@ -37,12 +30,9 @@ with app.app_context():
     
     def getChatUnreadedCount(chatID, userID, memberID):
         messages = Message.query.filter_by(chatID=chatID,firstUserID=memberID, status="notWatched").all()
-        for mes in messages:
-            print("UNWATCHED", mes.text)
         return len(messages)
 
     def getChats(username):
-        print("GETCHATS")
         user = User.query.filter_by(email=username).first()
         chats = Chat.query.filter_by(firstUserID=user.id).all()
         chats = chats + Chat.query.filter_by(secondUserID=user.id).all()
@@ -56,7 +46,6 @@ with app.app_context():
             memberProfile = Profile.query.filter_by(userID=memberID).first()
             res["name"] = memberProfile.name
             res["count"] = getChatUnreadedCount(chat.id, user.id, memberID)
-            # res["lastMessage"] = getLastMessage(chat.id)
             result.append(res)
         return result
     
@@ -97,7 +86,6 @@ with app.app_context():
         messages = Message.query.filter_by(chatID=chatID, secondUserID=user.id).all()
         for message in messages:
             message.status = "watched"
-            print("MADE WATCHED", message.text)
         db.session.commit()
         db.session.close()
 

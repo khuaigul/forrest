@@ -8,13 +8,10 @@ with app.app_context():
 
     def findKeyWords(str):
         keyWords = set()
-        print("STR", str)
         words = set(stringToList(str))
-        print("WORDS", words)
         for word in words:
             if len(word) == 0:
                 continue
-            print("WORD", word)
             if word[0].isupper():
                 keyWords.append(word)
         return keyWords

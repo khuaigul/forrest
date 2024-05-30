@@ -29,7 +29,6 @@ with app.app_context():
         return dict
     
     def getCategoryByID(categoryID):
-        print("get Category by ID ", categoryID)
         cat = Category.query.filter_by(id=categoryID).first()
         nameDict = getNameDict()
         name = ""
@@ -46,7 +45,6 @@ with app.app_context():
         return name
     
     def getCategoryIDByType(sportStatus, sportType, category = None):
-        # print(sportStatus, sportType, category)
         category = Category.query.filter_by(sportStatus=sportStatus, sportType=sportType, category=category).first()
         if category == None:
             return None
@@ -87,7 +85,6 @@ with app.app_context():
 
     def getCategoryTrackingID(val):
         val = int(val)
-        print("get categori tracking id")
         categories = Category.query.filter_by().all()
         if categories == []:
             create_caths()
@@ -95,8 +92,6 @@ with app.app_context():
             return -1
         sportType = "Tracking"
         categories = Category.query.filter_by(sportStatus="sport", category=val, sportType=sportType).first()
-        print("catt")
-        print(categories.id)
         return categories.id
     
     def getCategoryWaterID(val):
@@ -107,9 +102,6 @@ with app.app_context():
         if val == 0:
             return -1
         sportType = "Water"
-        print("val is 0")
-        print(type(val), type(0))
-        print(val == 0, val, 0)
         categories = Category.query.filter_by(sportStatus="sport", category=val, sportType=sportType).first()
         return categories.id
     
@@ -162,7 +154,6 @@ with app.app_context():
         return categories.id
     
     def addProfileCategory(userID, categoryID):
-        print("add profile category", categoryID)
         if categoryID == -1:
             return
         userSkill = UserSkill(userID=userID, categoryID=categoryID)
@@ -240,10 +231,8 @@ with app.app_context():
             addProfileCategory(userID, categoryID)
 
     def updateMounts(userID, value):
-        print("UPDATE MOUNTS", value)
         userSkills = UserSkill.query.filter_by(userID=userID).all()
         flag = False
-        print("UPDATE VALUE", value)
         for skill in userSkills:
             if isType(skill.categoryID, "Mounts"):
                 flag = True

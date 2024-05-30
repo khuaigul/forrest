@@ -29,9 +29,7 @@ with app.app_context():
                 if sportCategories[i]:
                     categories.append(getCategoryIDByType("sport", sportType, str(num)))
         categoryAnnouncementsIDS = getAnnouncementsByFilters(categories, dateBegin, dateEnd)
-        print("CATEGORY ANNOUNNCEMENTS", categoryAnnouncementsIDS)
         announcements = searchByText(categoryAnnouncementsIDS, searchString)
-        print("ANNOUNCEMENTS", announcements)
         return announcements
     
     def stringToList(text):

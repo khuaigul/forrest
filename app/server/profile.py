@@ -41,14 +41,13 @@ with app.app_context():
         db.session.commit()
         db.session.close()
 
-        print("UPDATE")
-
         updateTracking(userID, Tracking)
         updateWater(userID, Water)
         updateSkis(userID, Skis)
         updateMounts(userID, Mounts)
         updateBike(userID, Bike)
         updateMixed(userID, Mixed)
+
 
     def getUserName(userID):
         profile = Profile.query.filter_by(userID=userID).first()
@@ -65,7 +64,6 @@ with app.app_context():
         data["name"] = profile.name
         data["dateOfBirth"] = profile.dateOfBirth
         categories = getCategoriesDictbyUser(user.email)
-        print(categories)
         categoriesList = []
         if categories["Tracking"] != 0:
             categoriesList.append('Пешеходный поход ' + str(categories["Tracking"]))
@@ -83,8 +81,6 @@ with app.app_context():
         return data
     
     def getProfileDocs(username):
-        print("USERNAME", username)
         user = User.query.filter_by(email=username).first()
-        print(user.id)
         images = Image.query.filter_by(userID=user.id).all()
         return images

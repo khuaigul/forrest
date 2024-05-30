@@ -6,43 +6,17 @@
     <form class="form-group" action="/newAnnouncement" method="post" novalidate> 
         <h1>Новое объявление</h1>
         {{ form.csrf_token }}
-        <!-- <div class="form-group">
-            {{form.name.label(class="form-control-label")}}
-            {{form.name(class="form-control")}}
-        </div> -->
+       
         {{wtf.form_field(form.name)}}
         {{wtf.form_field(form.category)}}
         {{wtf.form_field(form.dateBegin)}}
         {{wtf.form_field(form.dateEnd)}}
         {{wtf.form_field(form.dateTillOpen)}}
         {{wtf.form_field(form.map)}}
-        {{wtf.form_field(form.info)}}
+        {{wtf.form_field(form.info)}} 
 
 
-        <!-- <div class="form-group">
-            {{form.category.label(class="form-control-label")}}
-            {{form.category(class="form-control")}}
-        </div>
-        <div class="form-group">
-            {{form.dateBegin.label(class="form-control-label")}}
-            {{form.dateBegin(class="form-control")}}
-        </div>
-        <div class="form-group">
-            {{form.dateEnd.label(class="form-control-label")}}
-            {{form.dateEnd(class="form-control")}}
-        </div>
-        <div class="form-group">
-            {{form.dateTillOpen.label(class="form-control-label")}}
-            {{form.dateTillOpen(class="form-control")}}
-        </div>
-        <div class="form-group">
-            {{form.map.label(class="form-control-label")}}
-            {{form.map(class="form-control")}}
-        </div>
-        <div class="form-group">
-            {{form.info.label(class="form-control-label")}}
-            {{form.info(class="form-control")}}
-        </div> -->
+        
         <p>
         {{note}}
 

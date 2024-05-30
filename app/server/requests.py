@@ -38,7 +38,6 @@ with app.app_context():
         return participants
 
     def requestsCount(username):
-        print(username)
         userID = User.query.filter_by(email=username).first().id
         announcements = Announcement.query.filter_by(headID=userID).all()
         cnt = 0
@@ -46,12 +45,9 @@ with app.app_context():
             anID = an.id
             requests = Request.query.filter_by(announcementID=anID, status="waiting").all()
             cnt = cnt + len(requests)
-            print(requests)
         requests = Request.query.filter_by(userID=userID, watchedStatus="notWatched", status="added").all()
         requests = requests + Request.query.filter_by(userID=userID, watchedStatus="notWatched", status="refused").all()
         cnt = cnt + len(requests)
-        # print(requests[0].announcementID, requests[0].watchedStatus)
-        print("CNT", cnt)
         return cnt
     
     def getRequests(username):
@@ -62,7 +58,6 @@ with app.app_context():
             anID = an.id
             requests = Request.query.filter_by(announcementID=anID, status="waiting").all()
             for request in requests:
-                print("REQUEST", request)
                 res = {}
                 res["id"] = request.id
                 res["type"] = "newRequest"
@@ -75,7 +70,6 @@ with app.app_context():
         requests = Request.query.filter_by(userID=userID, status ="added").all()
         requests = requests + Request.query.filter_by(userID=userID, status ="refused").all()
         for request in requests:
-            print("REQ", request)
             announcement = Announcement.query.filter_by(id=request.announcementID).first()
             res = {}
             res["id"] = request.id
@@ -90,22 +84,18 @@ with app.app_context():
     def changeWatchedStatus(username):
         userID = User.query.filter_by(email=username).first().id
         requests = Request.query.filter_by(userID=userID).all()
-        print(requests)
         for request in requests:
-            # print("REQUESTID", request.id)
             request.watchedStatus = "watched"
         db.session.commit()
         db.session.close()
 
     def checkIfHeaderByRequest(id, username):
-        print("HERE", id, username)
         userID = User.query.filter_by(email=username).first().id
         announcementID = Request.query.filter_by(id=id).first().announcementID
         announcement = Announcement.query.filter_by(id=announcementID).first()
         return announcement.headID == userID
     
     def acceptRequest(id):
-        print("AAccept")
         request = Request.query.filter_by(id=id).first()
         request.status = "added"
         makeChat(id)
@@ -145,7 +135,6 @@ with app.app_context():
     def getPassedTravelsByUser(userID):
         changeAnnouncementsStatuses()
         user = User.query.filter_by(id = userID).first()
-        print("USER", user.email)
         requests = Request.query.filter_by(userID=userID, status="added").all()
         result = []
         for request in requests:
@@ -168,3 +157,20 @@ with app.app_context():
         if request == []:
             return False
         return True
+    
+    def checkIfRequestNotRefused(userID, announcementID):
+        request = Request.query.filter_by(userID=userID, announcementID=announcementID).all()
+        if len(request) == 0:
+            return False
+        request = request[0]
+        if request.status == "refused":
+            return False
+        return True
+    
+    def removeParticipant(userID, announcementID):
+        request = Request.query.filter_by(userID=userID, announcementID=announcementID).first()
+        if request is None:
+            pass
+        request.status = "deleted"
+        db.session.commit()
+        db.session.close()
