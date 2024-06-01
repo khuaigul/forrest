@@ -5,7 +5,7 @@
 # from app import db
 from models import User
 # from app import db
-from app import app
+# from app import app
 from app.server.profile import getUserIDByUserView, getUserEmailByUserView
 from app.viewModels import *
 import unittest
