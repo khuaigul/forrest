@@ -28,7 +28,7 @@ jobs:
           python-versions: ${{matrix.python-versions}}
       
       - name: Install dependencies
-        run: python pip install unittest
+        run: python3 -m pip install unittest
       
       - name: Run tests
         run: python3 -m unittest
