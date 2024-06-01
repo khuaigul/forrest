@@ -27,6 +27,8 @@ jobs:
         with:
           python-versions: ${{matrix.python-versions}}
       
+      - name: Install dependences
+        run: python3 -m pip install flask
       
       - name: Run tests
         run: python3 -m unittest
