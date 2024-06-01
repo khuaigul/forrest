@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  run-tests:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+      python-versions:
+        - "3.7"
+        - "3.8"
+        - "3.9"
+
+    name: Test
+    runs-on: ${{matrix.os}}
+
+    steps:
+      - name: Checkout code
+        users: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-versions: ${{matrix.python-versions}}
+      
+      - name: Install dependencies
+        run: python pip install unittest
+      
+      - name: Run tests
+        run: python3 -m unittest
