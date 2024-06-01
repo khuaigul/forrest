@@ -28,8 +28,10 @@ jobs:
           python-versions: ${{matrix.python-versions}}
 
       - name: Set up venv
-        run: python3 -m venv venv |
-        source venv/bin/activate |
+        run: python3 -m venv venv 
+
+      - name: Source venv
+        run: source venv/bin/activate 
       
       - name: Install dependences
         run: python3 -m pip install flask==2.3.3 flask_sqlalchemy flask_bootstrap flask_wtf wtforms_alchemy flask_migrate flask_appbuilder
