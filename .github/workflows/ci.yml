@@ -29,7 +29,7 @@ jobs:
 
       - name: Set up venv
         run: python3 -m venv venv |
-        source venv/bin/activate |
+        source venv/bin/activate 
       
       - name: Install dependences
         run: python3 -m pip install flask flask_sqlalchemy flask_bootstrap flask_wtf wtforms_alchemy flask_migrate flask_appbuilder
