@@ -28,7 +28,8 @@ jobs:
           python-versions: ${{matrix.python-versions}}
       
       - name: Install dependences
-        run: python3 -m pip install flask
+        run: python3 -m pip install flask flask_sqlalchemy flask_bootstrap flask_wtf wtforms_alchemy flask_appbuilder flask_paginate Levenshtein flask_uploads
+
       
       - name: Run tests
         run: python3 -m unittest
