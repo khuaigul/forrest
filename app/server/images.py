@@ -1,7 +1,7 @@
 from app import app
 from flask import send_from_directory, url_for
 from app import ALLOWED_EXTENSIONS
-from flask_uploads import configure_uploads, IMAGES, UploadSet
+# from flask_uploads import configure_uploads, IMAGES, UploadSet
 from app.server.profile import getUserIDByUsername
 from models import Image
 from app import db

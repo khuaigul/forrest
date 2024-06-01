@@ -2,7 +2,7 @@ from app import db
 from app import app
 from models import Profile, UserSkill, Category, User, Image
 from app.server.cathegories import getCategoriesDictbyUser, updateTracking, updateWater, updateSkis, updateMounts, updateBike, updateMixed
-
+from app.viewModels import UserView
 
 with app.app_context():
     def getProfileData(username):
@@ -25,10 +25,17 @@ with app.app_context():
         return data
     
     def getUserIDByUsername(username):
-        return User.query.filter_by(email=username).first().id
+        user = User.query.filter_by(email=username).first()
+        return getUserIDByUserView(UserView(user))
     
+    def getUserIDByUserView(user : UserView):
+        return user.id
+
     def getUserEmail(id):
-        return User.query.filter_by(id=id).first().email
+        return getUserEmailByUserView(UserView(User.query.filter_by(id=id).first()))
+
+    def getUserEmailByUserView(user):
+        return user.email
 
     def updateProfile(username, name, dateOfBirth, gender, info, Tracking, Water, Skis, Mounts, Bike, Mixed):
         user = User.query.filter_by(email=username).first()

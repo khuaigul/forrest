@@ -18,14 +18,22 @@ ALLOWED_EXTENSIONS = {'.jpg', '.jpeg', '.png'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config["ALLOWED_EXTENSIONS"] = ALLOWED_EXTENSIONS
 
+
+
+
 with app.app_context():
    db = SQLAlchemy(app)
    migrate = Migrate(app, db)
 
+   db.create_all()
 
 
-# db = SQLAlchemy()
-# migrate = Migrate()
+
+
+# db = SQLAlchemy(app)
+# migrate = Migrate(app)
+
+# db.create_all()
 
 # def create_app(config_class=Config):
 #    app = Flask(__name__)

@@ -2,7 +2,7 @@ from app import app
 
 import pathlib
 import os
-
+import re
 from flask import render_template, make_response, url_for, session
 from app.forms import EditAnnouncement, DeleteParticipantForm, UploadForm, SearchForm, MessageForm,  AnswerRequest, AnnouncementConfirm, AnnouncementForm, EditProfile, LoginForm, SignupForm, NewProfile, HeadProfile, NewAnnouncement
 from flask import render_template, flash, redirect
@@ -27,6 +27,9 @@ from app.server.rules import checkIfUserAllowed, checkIfParticipantsAllowed
 def before_request():
     username = session.get('user')
     unlogged = ['/login', '/signup']
+    print(request.path)
+    if request.path in unlogged:
+        pass
     if session.get('user') is None and request.path not in unlogged:
         return redirect('/login')
     if request.path == '/user':
@@ -61,11 +64,11 @@ def before_request():
             return redirect('/headProfile')
 
     pathList = ['/announcement', '/announcementConfirm', '/answerRequest', '/deleteAnnouncement', 
-                '/daleteParticipant', '/editAnnouncement', 'headProfile', 'login', '/main', '/', 
+                '/daleteParticipant', '/editAnnouncement', '/headProfile', '/login', '/main', '/', 
                 '/messages', '/newAnnouncement', '/newProfile', '/notifications', '/participants',
-                '/profile', '/sighup', '/travels', '/uploadDocs', '/user', '/static/css/style.css']
+                '/profile', '/signup', '/travels', '/uploadDocs', '/user', '/static/css/style.css', '/logout']
     
-    if request.path not in pathList:
+    if request.path not in pathList and not request.path.startswith('/static/uploads/'):
         return redirect ('/main')
 
     pass
@@ -128,10 +131,11 @@ def login():
                 return render_template('login.html', note= "Неверный пароль", form=form)
     else:
         print("error validate")
+    print (form.signup.data)
     if form.signup.data:
         return redirect('/signup')
     else:
-        print("ERROR")
+        print("ERROR", form.errors)
     return render_template('login.html', title='Sign In', form=form)    
 
 @app.route('/signup', methods=['GET', 'POST'])
